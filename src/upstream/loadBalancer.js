@@ -1,17 +1,12 @@
 export class LoadBalancer {
-  constructor(serverPool) {
+  constructor(serverPool, strategy) {
     this.serverPool = serverPool;
-    this.currentIndex = 0;
+    this.strategy = strategy;
   }
 
   next() {
-    const servers = this.serverPool.getServers();
-
-    const server = servers[this.currentIndex];
-
-    this.currentIndex =
-        (this.currentIndex + 1) % servers.length;
-
-    return server;
+    return this.strategy.next(
+      this.serverPool.getServers()
+    );
   }
 }

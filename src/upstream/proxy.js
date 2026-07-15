@@ -1,9 +1,13 @@
 import http from "node:http";
 import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
+import { RoundRobin } from "./algorithms/roundRobin.js";
 
 const serverPool = new ServerPool();
-const loadBalancer = new LoadBalancer(serverPool);
+const loadBalancer = new LoadBalancer(
+    serverPool,
+    new RoundRobin()
+);
 
 export function forwardRequest(ctx) {
 
