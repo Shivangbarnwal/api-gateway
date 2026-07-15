@@ -1,29 +1,35 @@
 import http from "node:http";
 
-export async function testProxy() {
+export function forwardRequest(ctx) {
   return new Promise((resolve, reject) => {
-    const req = http.request(
+    const proxyReq = http.request(
       {
         hostname: "localhost",
         port: 8001,
-        path: "/",
-        method: "GET",
+        path: ctx.req.url,
+        method: ctx.req.method,
+        headers: ctx.req.headers,
       },
-      (res) => {
-        let data = "";
+      (proxyRes) => {
+        // Copy status code
+        ctx.res.statusCode = proxyRes.statusCode;
 
-        res.on("data", (chunk) => {
-          data += chunk;
+        // Copy all response headers
+        Object.entries(proxyRes.headers).forEach(([key, value]) => {
+          if (value !== undefined) {
+            ctx.res.setHeader(key, value);
+          }
         });
 
-        res.on("end", () => {
-          resolve(data);
-        });
+        // Pipe backend response directly to client
+        proxyRes.pipe(ctx.res);
+
+        proxyRes.on("end", resolve);
       }
     );
 
-    req.on("error", reject);
+    proxyReq.on("error", reject);
 
-    req.end();
+    ctx.req.pipe(proxyReq);
   });
 }
