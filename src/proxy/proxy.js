@@ -28,8 +28,10 @@ export function forwardRequest(ctx) {
       }
     );
 
-    proxyReq.on("error", reject);
-
+    proxyReq.on("error", (err) => {
+        err.statusCode = 502;
+        reject(err);
+    });
     ctx.req.pipe(proxyReq);
   });
 }

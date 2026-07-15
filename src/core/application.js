@@ -48,12 +48,15 @@ export class Application {
             console.error(err);
 
             if (!ctx.res.writableEnded) {
-            ctx.res.statusCode = 500;
+            ctx.res.statusCode = err.statusCode || 500;
             ctx.res.setHeader("Content-Type", "application/json");
 
             ctx.res.end(
                 JSON.stringify({
-                error: "Internal Server Error",
+                error:
+                    err.statusCode === 502
+                        ? "Bad Gateway"
+                        : "Internal Server Error",
                 })
             );
             }
