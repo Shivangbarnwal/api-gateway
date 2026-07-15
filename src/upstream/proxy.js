@@ -1,11 +1,18 @@
 import http from "node:http";
 
+import { ServerPool } from "./serverPool.js";
+
+const serverPool = new ServerPool();
+
 export function forwardRequest(ctx) {
+
+  const server = serverPool.getServers()[0];
+
   return new Promise((resolve, reject) => {
     const proxyReq = http.request(
       {
-        hostname: "localhost",
-        port: 8001,
+        hostname: server.host,
+        port: server.port,
         path: ctx.req.url,
         method: ctx.req.method,
         headers: ctx.req.headers,
