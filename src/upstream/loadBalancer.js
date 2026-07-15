@@ -7,6 +7,11 @@ export class LoadBalancer {
   next() {
     const servers = this.serverPool.getServers();
 
-    return servers[0];
+    const server = servers[this.currentIndex];
+
+    this.currentIndex =
+        (this.currentIndex + 1) % servers.length;
+
+    return server;
   }
 }
