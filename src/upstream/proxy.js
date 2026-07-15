@@ -1,12 +1,13 @@
 import http from "node:http";
-
+import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
 
 const serverPool = new ServerPool();
+const loadBalancer = new LoadBalancer(serverPool);
 
 export function forwardRequest(ctx) {
 
-  const server = serverPool.getServers()[0];
+  const server = loadBalancer.next();
 
   return new Promise((resolve, reject) => {
     const proxyReq = http.request(
