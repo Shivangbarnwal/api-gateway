@@ -2,17 +2,36 @@ import http from "node:http";
 import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
 import { RoundRobin } from "./algorithms/roundRobin.js";
+import { HealthChecker } from "./healthChecker.js";
 
 const serverPool = new ServerPool();
+
 const loadBalancer = new LoadBalancer(
     serverPool,
     new RoundRobin()
 );
+const healthChecker = new HealthChecker(serverPool);
+
+healthChecker.start();
 
 export function forwardRequest(ctx) {
 
   const server = loadBalancer.next();
 
+  if (!server) {
+    ctx.res.statusCode = 503;
+
+    ctx.res.setHeader("Content-Type", "application/json");
+
+    ctx.res.end(
+      JSON.stringify({
+        error: "Service Unavailable",
+        message: "No healthy upstream servers available",
+      })
+    );
+
+    return;
+  }
   return new Promise((resolve, reject) => {
     const proxyReq = http.request(
       {
@@ -41,6 +60,7 @@ export function forwardRequest(ctx) {
     );
 
     proxyReq.on("error", (err) => {
+        server.markUnhealthy();
         err.statusCode = 502;
         reject(err);
     });

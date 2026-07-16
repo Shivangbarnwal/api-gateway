@@ -9,4 +9,16 @@ export class UpstreamServer {
     this.weight = 1;
     this.failureCount = 0;
   }
+    isHealthy() {
+    return this.healthy;
+  }
+
+  markHealthy() {
+    this.healthy = true;
+  }
+
+  markUnhealthy() {
+    this.healthy = false;
+  }
+
 }

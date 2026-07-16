@@ -4,11 +4,19 @@ export class RoundRobin {
   }
 
   next(servers) {
-    const server = servers[this.currentIndex];
+    const totalServers = servers.length;
 
-    this.currentIndex =
-      (this.currentIndex + 1) % servers.length;
+    for (let i = 0; i < totalServers; i++) {
+      const server = servers[this.currentIndex];
 
-    return server;
+      this.currentIndex =
+        (this.currentIndex + 1) % totalServers;
+
+      if (server.isHealthy()) {
+        return server;
+      }
+    }
+
+    return null;
   }
 }
