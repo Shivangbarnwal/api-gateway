@@ -1,0 +1,1 @@
+export const UPSTREAM_TIMEOUT = 5000;

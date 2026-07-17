@@ -3,6 +3,7 @@ import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
 import { RoundRobin } from "./algorithms/roundRobin.js";
 import { HealthChecker } from "./healthChecker.js";
+import { UPSTREAM_TIMEOUT } from "../config/constants.js";
 
 const serverPool = new ServerPool();
 
@@ -48,13 +49,27 @@ function attemptRequest(ctx, server,body) {
 
         // Pipe backend response directly to client
         proxyRes.pipe(ctx.res);
-        ctx.res.on("finish", resolve);
+        ctx.res.once("finish", resolve);
       }
     );
+    proxyReq.setTimeout(UPSTREAM_TIMEOUT, () => {
+      const err = new Error("Upstream timeout");
+      err.code = "ETIMEDOUT";
+
+      proxyReq.destroy(err);
+    });
+
     proxyReq.on("error", (err) => {
+      if (err.code === "ETIMEDOUT") {
+        err.statusCode = 504;
+        err.clientMessage = "Upstream request timed out";
+      } else {
         server.markUnhealthy();
         err.statusCode = 502;
-        reject(err);
+        err.clientMessage = "Unable to connect to upstream server";
+      }
+
+      reject(err);
     });
     if (body.length > 0) {
       proxyReq.write(body);
@@ -84,6 +99,7 @@ export async function forwardRequest(ctx) {
 
     return;
   }
+  let lastError = null;
   while (server) {
     
 
@@ -91,18 +107,22 @@ export async function forwardRequest(ctx) {
       await attemptRequest(ctx, server, body);
       return;
     } catch (err) {
+      lastError = err;
       attemptedServers.add(server);
       server = loadBalancer.next(attemptedServers);
     }
   }
-  ctx.res.statusCode = 503;
+  ctx.res.statusCode = lastError?.statusCode ?? 503;
 
   ctx.res.setHeader("Content-Type", "application/json");
 
   ctx.res.end(
     JSON.stringify({
-      error: "Service Unavailable",
-      message: "All upstream servers failed",
+      error:
+        lastError?.statusCode === 504
+          ? "Gateway Timeout"
+          : "Bad Gateway",
+      message: lastError?.clientMessage ?? "All upstream servers failed",
     })
   );
 }
