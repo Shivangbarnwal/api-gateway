@@ -3,7 +3,7 @@ export class RoundRobin {
     this.currentIndex = 0;
   }
 
-  next(servers) {
+  next(servers, excludedServers = new Set()) {
     const totalServers = servers.length;
 
     for (let i = 0; i < totalServers; i++) {
@@ -12,7 +12,10 @@ export class RoundRobin {
       this.currentIndex =
         (this.currentIndex + 1) % totalServers;
 
-      if (server.isHealthy()) {
+      if (
+          server.isHealthy() &&
+          !excludedServers.has(server)
+      ){
         return server;
       }
     }

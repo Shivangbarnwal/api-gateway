@@ -4,9 +4,10 @@ export class LoadBalancer {
     this.strategy = strategy;
   }
 
-  next() {
+  next(excludedServers = new Set()) {
     return this.strategy.next(
-      this.serverPool.getServers()
+      this.serverPool.getServers(),
+      excludedServers
     );
   }
 }

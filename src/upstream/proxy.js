@@ -14,25 +14,19 @@ const healthChecker = new HealthChecker(serverPool);
 
 healthChecker.start();
 
-export function forwardRequest(ctx) {
-
-  const server = loadBalancer.next();
-
-  if (!server) {
-    ctx.res.statusCode = 503;
-
-    ctx.res.setHeader("Content-Type", "application/json");
-
-    ctx.res.end(
-      JSON.stringify({
-        error: "Service Unavailable",
-        message: "No healthy upstream servers available",
-      })
-    );
-
-    return;
-  }
+function readRequestBody(req) {
   return new Promise((resolve, reject) => {
+    const chunks = [];
+
+    req.on("data", chunk => chunks.push(chunk));
+    req.on("end", () => resolve(Buffer.concat(chunks)));
+    req.on("error", reject);
+  });
+}
+
+function attemptRequest(ctx, server,body) {
+  return new Promise((resolve, reject) => {
+
     const proxyReq = http.request(
       {
         hostname: server.host,
@@ -54,16 +48,61 @@ export function forwardRequest(ctx) {
 
         // Pipe backend response directly to client
         proxyRes.pipe(ctx.res);
-
-        proxyRes.on("end", resolve);
+        ctx.res.on("finish", resolve);
       }
     );
-
     proxyReq.on("error", (err) => {
         server.markUnhealthy();
         err.statusCode = 502;
         reject(err);
     });
-    ctx.req.pipe(proxyReq);
+    if (body.length > 0) {
+      proxyReq.write(body);
+    }
+
+    proxyReq.end();
   });
+}
+
+export async function forwardRequest(ctx) {
+  const body = await readRequestBody(ctx.req);
+  const attemptedServers = new Set();
+
+  let server = loadBalancer.next(attemptedServers);
+
+  if (!server) {
+    ctx.res.statusCode = 503;
+
+    ctx.res.setHeader("Content-Type", "application/json");
+
+    ctx.res.end(
+      JSON.stringify({
+        error: "Service Unavailable",
+        message: "No healthy upstream servers available",
+      })
+    );
+
+    return;
+  }
+  while (server) {
+    
+
+    try {
+      await attemptRequest(ctx, server, body);
+      return;
+    } catch (err) {
+      attemptedServers.add(server);
+      server = loadBalancer.next(attemptedServers);
+    }
+  }
+  ctx.res.statusCode = 503;
+
+  ctx.res.setHeader("Content-Type", "application/json");
+
+  ctx.res.end(
+    JSON.stringify({
+      error: "Service Unavailable",
+      message: "All upstream servers failed",
+    })
+  );
 }
