@@ -21,5 +21,17 @@ export class UpstreamServer {
   markUnhealthy() {
     this.healthy = false;
   }
+  incrementConnections() {
+    this.activeConnections++;
+  }
 
+  decrementConnections() {
+    if (this.activeConnections > 0) {
+        this.activeConnections--;
+    }
+  }
+
+  getActiveConnections() {
+    return this.activeConnections;
+  }
 }

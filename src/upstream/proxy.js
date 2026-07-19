@@ -1,7 +1,7 @@
 import http from "node:http";
 import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
-import { RoundRobin } from "./algorithms/roundRobin.js";
+import { LeastConnections } from "./algorithms/leastConnections.js";
 import { HealthChecker } from "./healthChecker.js";
 import { UPSTREAM_TIMEOUT } from "../config/constants.js";
 
@@ -9,7 +9,7 @@ const serverPool = new ServerPool();
 
 const loadBalancer = new LoadBalancer(
     serverPool,
-    new RoundRobin()
+    new LeastConnections()
 );
 const healthChecker = new HealthChecker(serverPool);
 
@@ -27,7 +27,8 @@ function readRequestBody(req) {
 
 function attemptRequest(ctx, server,body) {
   return new Promise((resolve, reject) => {
-
+    
+    server.incrementConnections();
     const proxyReq = http.request(
       {
         hostname: server.host,
@@ -49,7 +50,10 @@ function attemptRequest(ctx, server,body) {
 
         // Pipe backend response directly to client
         proxyRes.pipe(ctx.res);
-        ctx.res.once("finish", resolve);
+        ctx.res.once("finish", () => {
+          server.decrementConnections();
+          resolve();
+        });
       }
     );
     proxyReq.setTimeout(UPSTREAM_TIMEOUT, () => {
@@ -68,7 +72,7 @@ function attemptRequest(ctx, server,body) {
         err.statusCode = 502;
         err.clientMessage = "Unable to connect to upstream server";
       }
-
+      server.decrementConnections();
       reject(err);
     });
     if (body.length > 0) {
