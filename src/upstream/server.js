@@ -1,5 +1,6 @@
 export class UpstreamServer {
-  constructor(host, port) {
+  constructor(service,host, port) {
+    this.service = service;
     this.host = host;
     this.port = port;
 

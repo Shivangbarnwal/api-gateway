@@ -83,7 +83,10 @@ export async function forwardRequest(ctx) {
   const body = await readRequestBody(ctx.req);
   const attemptedServers = new Set();
 
-  let server = loadBalancer.next(attemptedServers);
+  let server = loadBalancer.next(
+    ctx.service.name,
+    attemptedServers
+  );
 
   if (!server) {
     ctx.res.statusCode = 503;
@@ -109,7 +112,10 @@ export async function forwardRequest(ctx) {
     } catch (err) {
       lastError = err;
       attemptedServers.add(server);
-      server = loadBalancer.next(attemptedServers);
+      server = loadBalancer.next(
+        ctx.service.name,
+        attemptedServers
+      );
     }
   }
   ctx.res.statusCode = lastError?.statusCode ?? 503;
