@@ -1,4 +1,5 @@
 import { Context } from "./context.js";
+import metricsCollector from "../metrics/index.js";
 
 export class Application {
   constructor() {
@@ -29,8 +30,11 @@ export class Application {
         return dispatch(0);
     }
     async handle(req, res) {
+        metricsCollector.recordRequest();
         const ctx = new Context(req, res);
-
+        ctx.res.once("finish", () => {
+            metricsCollector.recordStatusCode(ctx.res.statusCode);
+        });
         try {
             await this.compose(ctx);
 

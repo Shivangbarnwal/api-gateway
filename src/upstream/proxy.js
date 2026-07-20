@@ -1,7 +1,7 @@
 import http from "node:http";
 import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
-import { LeastConnections } from "./algorithms/leastConnections.js";
+import { RoundRobin } from "./algorithms/roundRobin.js";
 import { HealthChecker } from "./healthChecker.js";
 import { UPSTREAM_TIMEOUT } from "../config/constants.js";
 
@@ -9,7 +9,7 @@ const serverPool = new ServerPool();
 
 const loadBalancer = new LoadBalancer(
     serverPool,
-    new LeastConnections()
+    new RoundRobin()
 );
 const healthChecker = new HealthChecker(serverPool);
 

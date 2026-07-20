@@ -16,14 +16,6 @@ const server = http.createServer(async (req, res) => {
   await app.handle(req, res);
 });
 
-app.use(async (ctx, next) => {
-  const response = await testProxy();
-
-  console.log("Backend Response:");
-  console.log(response);
-
-  await next();
-});
 
 server.listen(PORT, () => {
   console.log(`Gateway listening on http://localhost:${PORT}`);
