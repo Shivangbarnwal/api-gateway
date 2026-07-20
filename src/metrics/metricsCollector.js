@@ -27,6 +27,7 @@ export class MetricsCollector {
     this.statusCodes = {};
     this.totalLatency = 0;
     this.requestCount = 0;
+    this.serviceRequests = {};
   }
   recordStatusCode(statusCode) {
   this.statusCodes[statusCode] =

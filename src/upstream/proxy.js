@@ -27,7 +27,7 @@ function readRequestBody(req) {
 
 function attemptRequest(ctx, server,body) {
   return new Promise((resolve, reject) => {
-    
+    ctx.upstream = server;
     server.incrementConnections();
     const proxyReq = http.request(
       {
@@ -35,7 +35,10 @@ function attemptRequest(ctx, server,body) {
         port: server.port,
         path: ctx.req.url,
         method: ctx.req.method,
-        headers: ctx.req.headers,
+        headers: {
+          ...ctx.req.headers,
+          "x-request-id": ctx.requestId,
+        },
       },
       (proxyRes) => {
         // Copy status code
