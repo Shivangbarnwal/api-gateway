@@ -31,9 +31,14 @@ export class Application {
     }
     async handle(req, res) {
         metricsCollector.recordRequest();
+        const startTime = performance.now();
         const ctx = new Context(req, res);
         ctx.res.once("finish", () => {
             metricsCollector.recordStatusCode(ctx.res.statusCode);
+            const duration =
+                performance.now() - startTime;
+
+            metricsCollector.recordLatency(duration);
         });
         try {
             await this.compose(ctx);

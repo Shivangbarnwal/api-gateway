@@ -30,6 +30,7 @@ export async function routerMiddleware(ctx, next) {
 
   ctx.route = serviceName;
   ctx.service = registry.get(serviceName);
+  metricsCollector.recordService(serviceName);
 
   await next();
 }
