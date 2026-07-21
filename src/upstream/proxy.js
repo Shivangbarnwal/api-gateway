@@ -3,7 +3,7 @@ import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
 import { RoundRobin } from "./algorithms/roundRobin.js";
 import { HealthChecker } from "./healthChecker.js";
-import { UPSTREAM_TIMEOUT } from "../config/constants.js";
+import config from "../config/config.js";
 
 const serverPool = new ServerPool();
 
@@ -59,7 +59,7 @@ function attemptRequest(ctx, server,body) {
         });
       }
     );
-    proxyReq.setTimeout(UPSTREAM_TIMEOUT, () => {
+    proxyReq.setTimeout(config.proxy.timeout, () => {
       const err = new Error("Upstream timeout");
       err.code = "ETIMEDOUT";
 

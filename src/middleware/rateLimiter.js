@@ -1,8 +1,9 @@
 import { RateLimiter } from "../rateLimiter/rateLimiter.js";
+import config from "../config/config.js";
 
 const rateLimiter = new RateLimiter(
-  5,
-  10_000
+  config.rateLimit.limit,
+  config.rateLimit.windowMs
 );
 
 export async function rateLimiterMiddleware(ctx,next) 

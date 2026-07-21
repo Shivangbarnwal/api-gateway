@@ -5,8 +5,9 @@ import { logger } from "../middleware/logger.js";
 import { routerMiddleware } from "../middleware/router.js";
 import { rateLimiterMiddleware } from "../middleware/rateLimiter.js";
 import { auth } from "../middleware/auth.js";
+import config from "../config/config.js";
 
-const PORT = 8080;
+const PORT = config.server.port;
 const app = new Application();
 
 app.use(logger);

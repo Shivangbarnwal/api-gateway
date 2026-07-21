@@ -1,9 +1,10 @@
 import http from "node:http";
-
+import config from "../config/config.js";
+  
 export class HealthChecker {
-  constructor(serverPool, interval = 5000) {
+  constructor(serverPool) {
     this.serverPool = serverPool;
-    this.interval = interval;
+    this.interval = config.health.interval;
   }
 
   start() {
@@ -22,7 +23,7 @@ export class HealthChecker {
             port: server.port,
             path: "/health",
             method: "GET",
-            timeout: 2000,
+            timeout: config.health.timeout,
         },
         (res) => {
             if (res.statusCode === 200) {
