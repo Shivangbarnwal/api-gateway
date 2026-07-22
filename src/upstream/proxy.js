@@ -1,16 +1,15 @@
 import http from "node:http";
 import { LoadBalancer } from "./loadBalancer.js";
 import { ServerPool } from "./serverPool.js";
-import { RoundRobin } from "./algorithms/roundRobin.js";
 import { HealthChecker } from "./healthChecker.js";
 import config from "../config/config.js";
 
 const serverPool = new ServerPool();
+serverPool.loadServices(config.services);
 
-const loadBalancer = new LoadBalancer(
-    serverPool,
-    new RoundRobin()
-);
+const loadBalancer = new LoadBalancer(serverPool);
+loadBalancer.loadStrategies(config.services);
+
 const healthChecker = new HealthChecker(serverPool);
 
 healthChecker.start();

@@ -1,0 +1,26 @@
+routes:
+  - path: /users
+    service: users
+
+  - path: /products
+    service: products
+
+services:
+  users:
+    strategy: roundRobin
+
+    instances:
+      - host: localhost
+        port: 8001
+
+      - host: localhost
+        port: 8002
+
+  products:
+    strategy: random
+
+    instances:
+      - host: localhost
+        port: 8003
+      - host: localhost
+        port: 8004

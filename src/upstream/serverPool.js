@@ -5,17 +5,23 @@ export class ServerPool {
     this.servers = [];
     this.services = new Map();
 
-    this.addServer(
-        new UpstreamServer("users", "localhost", 8001)
-    );
+  }
+  loadServices(configServices) {
+    // Reset existing state (useful if we ever support config reloads)
+    this.servers = [];
+    this.services = new Map();
 
-    this.addServer(
-        new UpstreamServer("users", "localhost", 8002)
-    );
-
-    this.addServer(
-        new UpstreamServer("products", "localhost", 8003)
-    );
+    for (const [serviceName, serviceConfig] of Object.entries(configServices)) {
+      for (const instance of serviceConfig.instances) {
+        this.addServer(
+          new UpstreamServer(
+            serviceName,
+            instance.host,
+            instance.port
+          )
+        );
+      }
+    }
   }
   addServer(server) {
     this.servers.push(server);
@@ -24,9 +30,7 @@ export class ServerPool {
         this.services.set(server.service, []);
     }
 
-    this.services
-        .get(server.service)
-        .push(server);
+    this.services.get(server.service).push(server);
   }
   getServersForService(serviceName) {
     return this.services.get(serviceName) ?? [];

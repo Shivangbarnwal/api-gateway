@@ -1,9 +1,8 @@
 import { Router } from "./router.js";
+import config from "../config/config.js";
 
 const router = new Router();
 
-router.register("/users", "users");
-router.register("/products", "products");
-router.register("/payments", "payments");
+router.loadRoutes(config.routes);
 
 export default router;

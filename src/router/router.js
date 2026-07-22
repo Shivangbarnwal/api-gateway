@@ -9,6 +9,14 @@ export class Router {
     this.routes.push(new Route(prefix, service));
   }
 
+  loadRoutes(configRoutes) {
+    this.routes = [];
+
+    for (const route of configRoutes) {
+      this.register(route.path, route.service);
+    }
+  }
+
   match(path) {
     for (const route of this.routes) {
       if (path.startsWith(route.prefix)) {
