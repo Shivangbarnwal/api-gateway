@@ -5,6 +5,9 @@ routes:
   - path: /products
     service: products
 
+  - path: /orders
+    service: orders
+
 services:
   users:
     strategy: roundRobin
@@ -24,3 +27,12 @@ services:
         port: 8003
       - host: localhost
         port: 8004
+
+  orders:
+    strategy: leastConnections
+
+    instances:
+      - host: localhost
+        port: 8005
+      - host: localhost
+        port: 8006

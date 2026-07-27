@@ -38,4 +38,15 @@ export class ServerPool {
   getServers() {
     return this.servers;
   }
+  getSnapshot() {
+    const snapshot = {};
+
+    for (const [serviceName, servers] of this.services) {
+      snapshot[serviceName] = servers.map(server =>
+        server.getSnapshot()
+      );
+    }
+
+    return snapshot;
+  }
 }

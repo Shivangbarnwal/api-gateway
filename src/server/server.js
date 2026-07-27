@@ -6,6 +6,7 @@ import { routerMiddleware } from "../middleware/router.js";
 import { rateLimiterMiddleware } from "../middleware/rateLimiter.js";
 import { auth } from "../middleware/auth.js";
 import config from "../config/config.js";
+import { admin } from "../middleware/admin.js";
 
 const PORT = config.server.port;
 const app = new Application();
@@ -13,6 +14,7 @@ const app = new Application();
 app.use(logger);
 app.use(rateLimiterMiddleware);
 app.use(auth);
+app.use(admin);
 app.use(routerMiddleware);
 app.use(proxy);
 

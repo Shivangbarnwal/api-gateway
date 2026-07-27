@@ -4,10 +4,10 @@ import { ServerPool } from "./serverPool.js";
 import { HealthChecker } from "./healthChecker.js";
 import config from "../config/config.js";
 
-const serverPool = new ServerPool();
+export const serverPool = new ServerPool();
 serverPool.loadServices(config.services);
 
-const loadBalancer = new LoadBalancer(serverPool);
+export const loadBalancer = new LoadBalancer(serverPool);
 loadBalancer.loadStrategies(config.services);
 
 const healthChecker = new HealthChecker(serverPool);

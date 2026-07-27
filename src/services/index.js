@@ -1,16 +1,11 @@
+import config from "../config/config.js";
 import { Service } from "./service.js";
 import { ServiceRegistry } from "./serviceRegistry.js";
 
 const registry = new ServiceRegistry();
 
-const serviceNames = [
-  "users",
-  "products",
-  "payments",
-];
-
-for (const name of serviceNames) {
-  registry.register(new Service(name));
+for (const serviceName of Object.keys(config.services)) {
+  registry.register(new Service(serviceName));
 }
 
 export default registry;

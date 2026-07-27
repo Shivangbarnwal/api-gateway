@@ -4,9 +4,10 @@ export class UpstreamServer {
     this.host = host;
     this.port = port;
 
-    // Used in future stages
+    
     this.healthy = true;
     this.activeConnections = 0;
+    // Used in future stages
     this.weight = 1;
     this.failureCount = 0;
   }
@@ -33,5 +34,13 @@ export class UpstreamServer {
 
   getActiveConnections() {
     return this.activeConnections;
+  }
+  getSnapshot() {
+    return {
+      host: this.host,
+      port: this.port,
+      healthy: this.healthy,
+      activeConnections: this.activeConnections,
+    };
   }
 }
