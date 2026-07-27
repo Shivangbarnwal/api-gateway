@@ -1,15 +1,24 @@
 {
   "name": "api-gateway",
   "version": "1.0.0",
+  "description": "A production-inspired API Gateway built from scratch in Node.js without Express.",
   "type": "module",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server/server.js",
+    "dev": "node --watch src/server/server.js",
+    "test": "echo \"Tests not implemented yet\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "api-gateway",
+    "reverse-proxy",
+    "load-balancer",
+    "nodejs",
+    "middleware",
+    "microservices"
+  ],
+  "author": "Shivang Barnwal",
+  "license": "MIT",
   "dependencies": {
     "dotenv": "^17.4.2",
     "yaml": "^2.9.0"
