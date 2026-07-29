@@ -10,7 +10,7 @@ export async function routerMiddleware(ctx, next) {
     ctx.res.end(
       JSON.stringify(metricsCollector.getMetrics())
     );
-
+    
     return;
   }
   const serviceName = router.match(ctx.req.url);
@@ -31,6 +31,5 @@ export async function routerMiddleware(ctx, next) {
   ctx.route = serviceName;
   ctx.service = registry.get(serviceName);
   metricsCollector.recordService(serviceName);
-
   await next();
 }

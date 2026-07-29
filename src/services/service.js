@@ -1,14 +1,14 @@
 export class Service {
-  constructor(name) {
+  constructor(name, config = {}) {
     this.name = name;
-    this.metadata = {};
-  }
 
-  setMetadata(key, value) {
-    this.metadata[key] = value;
-  }
+    this.strategy = config.strategy;
 
-  getMetadata(key) {
-    return this.metadata[key];
+    this.cache = config.cache ?? {
+      enabled: false,
+      ttl: 0,
+    };
+
+    this.instances = config.instances ?? [];
   }
 }

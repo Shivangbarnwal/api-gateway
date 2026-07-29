@@ -12,6 +12,11 @@ services:
   users:
     strategy: roundRobin
 
+    cache:
+      enabled: true
+      ttl: 60
+
+
     instances:
       - host: localhost
         port: 8001
@@ -22,6 +27,10 @@ services:
   products:
     strategy: random
 
+    cache:
+      enabled: false
+      ttl: 60
+
     instances:
       - host: localhost
         port: 8003
@@ -31,8 +40,13 @@ services:
   orders:
     strategy: leastConnections
 
+    cache:
+      enabled: true
+      ttl: 30
+
     instances:
       - host: localhost
         port: 8005
       - host: localhost
         port: 8006
+      

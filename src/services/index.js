@@ -4,8 +4,10 @@ import { ServiceRegistry } from "./serviceRegistry.js";
 
 const registry = new ServiceRegistry();
 
-for (const serviceName of Object.keys(config.services)) {
-  registry.register(new Service(serviceName));
+for (const [serviceName, serviceConfig] of Object.entries(config.services)) {
+  registry.register(
+    new Service(serviceName, serviceConfig)
+  );
 }
 
 export default registry;

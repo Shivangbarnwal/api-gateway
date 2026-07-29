@@ -5,6 +5,10 @@ export class MetricsCollector {
     this.totalLatency = 0;
     this.requestCount = 0;
     this.serviceRequests = {};
+
+    this.cacheHits = 0;
+    this.cacheMisses = 0;
+    this.cacheStores = 0;
   }
 
   recordRequest() {
@@ -19,7 +23,12 @@ export class MetricsCollector {
         this.requestCount === 0
             ? 0
             : this.totalLatency / this.requestCount,
-      serviceRequests: this.serviceRequests
+      serviceRequests: this.serviceRequests,
+      cache: {
+        hits: this.cacheHits,
+        misses: this.cacheMisses,
+        stores: this.cacheStores,
+    },
     };
   }
   reset() {
@@ -28,6 +37,9 @@ export class MetricsCollector {
     this.totalLatency = 0;
     this.requestCount = 0;
     this.serviceRequests = {};
+    this.cacheHits = 0;
+    this.cacheMisses = 0;
+    this.cacheStores = 0;
   }
   recordStatusCode(statusCode) {
   this.statusCodes[statusCode] =
@@ -40,5 +52,16 @@ export class MetricsCollector {
   recordService(serviceName) {
   this.serviceRequests[serviceName] =
     (this.serviceRequests[serviceName] ?? 0) + 1;
+  }
+  recordCacheHit() {
+    this.cacheHits++;
+  }
+
+  recordCacheMiss() {
+    this.cacheMisses++;
+  }
+
+  recordCacheStore() {
+    this.cacheStores++;
   }
 }
