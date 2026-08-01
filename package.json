@@ -7,7 +7,12 @@
   "scripts": {
     "start": "node src/server/server.js",
     "dev": "node --watch src/server/server.js",
-    "test": "echo \"Tests not implemented yet\""
+    "test": "node --test",
+    "test:integration": "node --test tests/integration/**/*.test.js",
+    "test:all": "node --test tests",
+    "benchmark:users": "autocannon -c 50 -d 20 -H \"Authorization: Bearer user-token\" http://localhost:8080/users",
+    "benchmark:products": "autocannon -c 50 -d 20 -H \"Authorization: Bearer user-token\" http://localhost:8080/products",
+    "benchmark:payments": "autocannon -c 50 -d 20 -H \"Authorization: Bearer user-token\" http://localhost:8080/payments"
   },
   "keywords": [
     "api-gateway",
@@ -22,5 +27,8 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0"
   }
 }

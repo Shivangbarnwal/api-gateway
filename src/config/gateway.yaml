@@ -10,7 +10,7 @@ routes:
 
 services:
   users:
-    strategy: roundRobin
+    strategy: leastConnections
 
     cache:
       enabled: false

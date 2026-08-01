@@ -14,7 +14,7 @@ services:
     container_name: gateway
 
     volumes:
-      - ../src/config/gateway.yaml:/app/src/config/gateway.yaml:ro
+        - ../src/config/gateway.yaml:/app/src/config/gateway.yaml:ro
 
     ports:
       - "8080:8080"
