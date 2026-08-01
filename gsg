@@ -1,0 +1,22 @@
+* [33m243d380[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m docs: add comprehensive project documentation
+* [33mf90a528[m feat: complete API gateway implementation and testing
+* [33mef7afc6[m feat: dockerize API gateway with multi-container backend architecture
+* [33m7093132[m Implemented caching and validate gateway routes, services, cache and instances
+[31m|[m * [33m0a4c32b[m[33m ([m[1;31morigin/main[m[33m)[m Enhance README with features and tech stack
+[31m|[m[31m/[m  
+* [33md0a899d[m[33m ([m[1;33mtag: [m[1;33mv1.0-admin-api[m[33m)[m updated package.json
+* [33me359f53[m feat: add configurable admin API and dynamic service registry
+* [33m23421d6[m feat: externalize gateway topology into YAML configuration
+* [33m48fe639[m refactor: centralize deployment configuration
+* [33m6f43be5[m add bearer token authentication middleware and rate Limiter
+* [33m85b8c8d[m feat(logging): add structured request logging with correlation IDs
+* [33m3e58d76[m feat(metrics): implement request, latency and service metrics
+* [33m3e760b7[m fix(load-balancer): prevent round robin index overflow across services
+* [33m8e4f8c9[m feat(load-balancer): implement pluggable load balancing strategies
+* [33m26cc700[m refactor(service-registry): decouple services from upstream instances
+* [33m21f9f86[m feat(proxy): add retry, timeout handling, and failover
+* [33mbe762f7[m feat(proxy): implement retry and automatic failover
+* [33m0b8e46c[m feat(health): implement active health checks and automatic recovery
+* [33m8c03050[m refactor(lb): introduce pluggable load balancing strategies
+* [33ma69ba05[m feat(lb): implement round robin load balancing
+o [33m1b6378e[m refactor(lb): introduce LoadBalancer abstraction
