@@ -224,6 +224,47 @@ curl -X DELETE -H "Authorization: Bearer admin-token" http://localhost:8080/admi
 
 ## Running
 
+### Quick Start (Recommended)
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Shivangbarnwal/api-gateway.git
+cd api-gateway
+```
+
+Start the complete gateway stack:
+
+```bash
+docker compose -f docker/docker-compose.yml up --build
+```
+
+This launches:
+
+- API Gateway (`localhost:8080`)
+- `users1` and `users2`
+- `products1` and `products2`
+- `payments1` and `payments2`
+
+The Docker setup is the recommended way to run the project because it starts the gateway together with all backend services using the provided configuration.
+
+Once the containers are running, the gateway will be available at:
+
+```text
+http://localhost:8080
+```
+
+You can verify the deployment with:
+
+```bash
+curl -H "Authorization: Bearer user-token" http://localhost:8080/users
+```
+
+or use Postman with one of the built-in bearer tokens:
+
+- `user-token`
+- `admin-token`
+
 ### Prerequisites
 
 - Node.js 22 or a compatible modern Node.js runtime
