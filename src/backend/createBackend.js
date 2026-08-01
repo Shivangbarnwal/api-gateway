@@ -1,6 +1,6 @@
 import http from "node:http";
 
-export function createBackend(port, name) {
+export function createBackend(port, serviceName, instanceId) {
   const server = http.createServer((req, res) => {
     let body = "";
 
@@ -16,7 +16,8 @@ export function createBackend(port, name) {
 
       res.end(
         JSON.stringify({
-          service: name,
+          service: serviceName,
+          instance: `${serviceName}-${instanceId}`,
           method: req.method,
           path: req.url,
           headers: req.headers,
@@ -28,6 +29,6 @@ export function createBackend(port, name) {
   });
 
   server.listen(port, () => {
-    console.log(`${name} listening on http://localhost:${port}`);
+    console.log(`${serviceName}-${instanceId} container started (port ${port})`);
   });
 }

@@ -1,0 +1,91 @@
+x-backend-common: &backend-common
+  image: api-gateway-backend
+  build:
+    context: ..
+    dockerfile: docker/backend.Dockerfile
+
+services:
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: docker/gateway.Dockerfile
+
+    container_name: gateway
+
+    volumes:
+      - ../src/config/gateway.yaml:/app/src/config/gateway.yaml:ro
+
+    ports:
+      - "8080:8080"
+
+    env_file:
+      - ../.env
+
+    depends_on:
+      - users1
+      - users2
+      - products1
+      - products2
+      - payments1
+      - payments2
+
+  users1:
+    <<: *backend-common
+
+    container_name: users1
+
+    environment:
+      SERVICE_NAME: users
+      INSTANCE_ID: 1
+      PORT: 8001
+
+  users2:
+    <<: *backend-common
+
+    container_name: users2
+
+    environment:
+      SERVICE_NAME: users
+      INSTANCE_ID: 2
+      PORT: 8001
+
+  products1:
+    <<: *backend-common
+
+    container_name: products1
+
+    environment:
+      SERVICE_NAME: products
+      INSTANCE_ID: 1
+      PORT: 8001
+
+  products2:
+    <<: *backend-common
+
+    container_name: products2
+
+    environment:
+      SERVICE_NAME: products
+      INSTANCE_ID: 2
+      PORT: 8001
+
+  payments1:
+    <<: *backend-common
+
+    container_name: payments1
+
+    environment:
+      SERVICE_NAME: payments
+      INSTANCE_ID: 1
+      PORT: 8001
+
+  payments2:
+    <<: *backend-common
+
+    container_name: payments2
+
+    environment:
+      SERVICE_NAME: payments
+      INSTANCE_ID: 2
+      PORT: 8001

@@ -5,48 +5,47 @@ routes:
   - path: /products
     service: products
 
-  - path: /orders
-    service: orders
+  - path: /payments
+    service: payments
 
 services:
   users:
     strategy: roundRobin
 
     cache:
-      enabled: true
-      ttl: 60
-
+      enabled: false
+      ttl: 10
 
     instances:
-      - host: localhost
+      - host: users1
         port: 8001
 
-      - host: localhost
-        port: 8002
+      - host: users2
+        port: 8001
 
   products:
     strategy: random
 
     cache:
       enabled: false
-      ttl: 60
+      ttl: 10
 
     instances:
-      - host: localhost
-        port: 8003
-      - host: localhost
-        port: 8004
+      - host: products1
+        port: 8001
+      - host: products2
+        port: 8001
 
-  orders:
+  payments:
     strategy: leastConnections
 
     cache:
       enabled: true
-      ttl: 30
+      ttl: 60
 
     instances:
-      - host: localhost
-        port: 8005
-      - host: localhost
-        port: 8006
+      - host: payments1
+        port: 8001
+      - host: payments2
+        port: 8001
       
